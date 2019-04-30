@@ -18,48 +18,64 @@ class ColorMatch:
     def __init__(self):
         self.model_path = 'model-images/'
         self.color_array = None
+        self.pix_array = []
 
+    def create_model(self, hsv, pix_limit):
 
-    def create_model(self):
+        del self.pix_array[:]
 
-        fn = os.path.join(self.model_path, '9uvmn7doasi01.jpg')
+        for f_str in os.listdir(self.model_path):
 
-        # Open Image
-        m_img = cv2.imread(fn)
+            if f_str == '.DS_Store':
+                continue
 
-        img = cv2.cvtColor(m_img, cv2.COLOR_BGR2HSV)
+            fn = os.path.join(self.model_path, f_str)
 
-        print 'Points:', img.shape[0] * img.shape[1]
+            # Open Image
+            m_img = cv2.imread(fn)
 
-        # Only get unique points
-        img_array = np.asarray(img).reshape((img.shape[0] * img.shape[1], 3))
+            if hsv:
+                print 'Loading HSV'
+                img = cv2.cvtColor(m_img, cv2.COLOR_BGR2HSV)
+            else:
+                print 'Loading BGR'
+                img = m_img
 
-        unq_col, count_ind = np.unique(img_array, axis=0, return_counts=True)
+            print
+            print 'Loading File -', f_str
+            print 'Points:', img.shape[0] * img.shape[1]
 
-        print unq_col.shape
+            # Only get unique points
+            img_array = np.asarray(img).reshape((img.shape[0] * img.shape[1], 3))
+            self.pix_array.append(img_array)
+
+        print
+        print 'Calculating unique colors'
+        unq_col, count_ind = np.unique(np.vstack(self.pix_array), axis=0, return_counts=True)
+
+        print 'Number of unique colors', unq_col.shape
+
+        print 'Removing colors less than blob size'
 
         for i in range(len(count_ind)):
 
-            if count_ind[i] < 100:
+            if count_ind[i] < pix_limit:
                 # print "Too small pixels:", unq_col[i]
                 unq_col[i] = np.nan
 
         unq_col = np.unique(unq_col, axis=0)
-        print unq_col.shape
+        print 'Updated number of unique colors', unq_col.shape
 
         # Plot
 
         self.color_array = unq_col
 
-        # Cluster???
-
     def save_model(self, model_fn):
-
-        np.save(model_fn, self.color_array)
+        np.save(str(model_fn), self.color_array)
 
     def load_model(self, model_fn):
 
-        c_array = np.load(model_fn)
+        c_array = np.load(str(model_fn))
         self.color_array = c_array
 
     def plot_model(self):

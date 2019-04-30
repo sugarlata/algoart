@@ -1,4 +1,5 @@
 
+
 MainScreen:
 
     GridLayout:
@@ -25,29 +26,10 @@ MainScreen:
 
                     ScrollView:
                         do_scroll_x:
-                        size_hint: 1, None
-                        height: dp(300)
+                        size_hint: 1, 1
+
                         MDList:
                             id: list_color_models
-
-                    GridLayout:
-                        size_hint: 1, None
-                        height: dp(50)
-                        cols: 2
-
-
-                        AnchorLayout:
-                            center_x: True
-
-                            MDRaisedButton:
-                                text: 'Remove'
-
-
-                        AnchorLayout:
-                            center_x: True
-
-                            MDRaisedButton:
-                                text: 'Add'
 
                     GridLayout:
                         size_hint: 1, None
@@ -70,6 +52,7 @@ MainScreen:
                         cols: 2
 
                         MDTextField:
+                            id: pix_blob_limit
                             helper_text: "Pixel Blob Limit"
                             helper_text_mode: "persistent"
 
@@ -80,6 +63,31 @@ MainScreen:
 
                         MDRaisedButton:
                             text: 'Reload Color Model'
+                            on_release: root.reload_color_model(color_hsv_bgr.active, pix_blob_limit.text)
+
+                    AnchorLayout:
+                        size_hint: 1, None
+                        height: dp(50)
+                        center_x: True
+
+                        MDRaisedButton:
+                            text: 'Save Color Model'
+                            on_release: root.save_color_model_file(col_fn.text)
+
+                    MDTextField:
+                        id: col_fn
+                        text: 'hsv'  # TODO Remove this
+                        helper_text: "Color Model File Name"
+                        helper_text_mode: "persistent"
+
+                    AnchorLayout:
+                        size_hint: 1, None
+                        height: dp(50)
+                        center_x: True
+
+                        MDRaisedButton:
+                            text: 'Load Color Model'
+                            on_release: root.load_color_model_file(col_fn.text)
 
 
 
@@ -93,8 +101,25 @@ MainScreen:
                     cols: 1
 
                     MDTextField:
+                        id: background_tf
+                        text: 'me.jpg'  # TODO Remove this line
                         helper_text: "Background File Name"
                         helper_text_mode: "persistent"
+
+                    GridLayout:
+                        size_hint: 1, None
+                        height: dp(50)
+                        cols: 2
+
+                        MDLabel:
+                            text: 'HSV / BGR'
+
+                        MDSwitch:
+                            id: background_hsv_bgr
+                            size_hint:    None, None
+                            size:        dp(36), dp(48)
+                            pos_hint:    {'center_x': 0.75, 'center_y': 0.5}
+                            _active:        False
 
                     AnchorLayout:
                         size_hint: 1, None
@@ -103,6 +128,7 @@ MainScreen:
 
                         MDRaisedButton:
                             text: 'Load'
+                            on_release: root.load_background_image(background_tf.text, not background_hsv_bgr.active)
 
                     GridLayout:
                         size_hint: 1, None
@@ -126,6 +152,7 @@ MainScreen:
                                 size_hint:    None, None
                                 size:        dp(30), dp(30)
                                 pos_hint:    {'center_x': 0.25, 'center_y': 0.5}
+                                on_state: root.change_background_type(self, 'black')
 
                             MDLabel:
                                 size_hint: None, None
@@ -139,6 +166,7 @@ MainScreen:
                                 size_hint:    None, None
                                 size:        dp(30), dp(30)
                                 pos_hint:    {'center_x': 0.25, 'center_y': 0.5}
+                                on_state: root.change_background_type(self, 'white')
 
                             MDLabel:
                                 size_hint: None, None
@@ -152,6 +180,7 @@ MainScreen:
                                 size_hint:    None, None
                                 size:        dp(30), dp(30)
                                 pos_hint:    {'center_x': 0.25, 'center_y': 0.5}
+                                on_state: root.change_background_type(self, 'picture')
 
                     AnchorLayout:
                         size_hint: 1, None
@@ -160,6 +189,7 @@ MainScreen:
 
                         MDRaisedButton:
                             text: 'OK'
+                            on_release: root.background_ok_click()
 
 
 

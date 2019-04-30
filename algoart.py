@@ -1,7 +1,7 @@
 import cv2
 import numpy as np
-from color_matching import ColorMatch
-from algo_masks import pointSinusoidal, pointDamped, pointParabolic
+from service_color_matching import ColorMatch
+from service_masks import pointSinusoidal, pointDamped, pointParabolic
 
 
 def main():
