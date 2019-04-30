@@ -1,5 +1,6 @@
 import numpy as np
 import scipy.ndimage as ndimage
+from scipy import ndimage
 
 
 def create_circular_mask(h, w, center=None, radius=None):
@@ -41,21 +42,33 @@ def create_donut_mask(h, w, f, center=None, radius=None):
 
 class squarePattern:
 
-    def __init__(self, shape, a, o, f, s):
+    def __init__(self, shape, a, o, f, s, mode=None):
 
-        self.matrix = np.zeros(shape, dtype=np.float32)
+        if mode is None:
+            mode = 'wrap'
+
+        matrix = np.zeros(shape, dtype=np.float32)
 
         for i in range(o, shape[1], f):
             for j in range(0, s):
                 try:
-                    self.matrix[:,i+j] = 1
+                    matrix[:,i+j] = 1
                 except:
                     pass
+
+        if a != 0:
+            self.matrix = ndimage.rotate(matrix, a, reshape=False, mode=mode)
+
+        else:
+            self.matrix = matrix
 
 
 class sinusoidalPattern:
 
-    def __init__(self, shape, a, o, f):
+    def __init__(self, shape, a, o, f, mode=None):
+
+        if mode is None:
+            mode = 'wrap'
 
         x = np.linspace(0, shape[0], shape[0])
         y = np.linspace(0, shape[1], shape[1])
@@ -64,39 +77,63 @@ class sinusoidalPattern:
         sub = np.radians(xx * f + o)
         z = np.sin(sub)
 
-        self.matrix = z.astype(dtype=np.float32)
+        matrix = z.astype(dtype=np.float32)
+
+        if a != 0:
+            self.matrix = ndimage.rotate(matrix, a, reshape=False, mode=mode)
+
+        else:
+            self.matrix = matrix
 
 
 class paraboloidPattern:
 
-    def __init__(self, shape, a, o, f):
+    def __init__(self, shape, a, o, f, mode=None):
 
-        self.matrix = np.zeros(shape, dtype=np.float32)
+        if mode is None:
+            mode = 'wrap'
+
+        matrix = np.zeros(shape, dtype=np.float32)
 
         for i in range(o, shape[1], f):
             for j in range(0, f):
                 try:
-                    self.matrix[:,i+j] = j / float(f)
+                    matrix[:,i+j] = j / float(f)
                 except:
                     pass
 
-        self.matrix = 1 - 4 * self.matrix + 4 * self.matrix ** 2
+        matrix = 1 - 4 * matrix + 4 * matrix ** 2
+
+        if a != 0:
+            self.matrix = ndimage.rotate(matrix, a, reshape=False, mode=mode)
+
+        else:
+            self.matrix = matrix
 
 
 class reverseParaboloidPattern:
 
-    def __init__(self, shape, a, o, f):
+    def __init__(self, shape, a, o, f, mode=None):
 
-        self.matrix = np.zeros(shape, dtype=np.float32)
+        if mode is None:
+            mode = 'wrap'
+
+        matrix = np.zeros(shape, dtype=np.float32)
 
         for i in range(o, shape[1], f):
             for j in range(0, f):
                 try:
-                    self.matrix[:, i + j] = j / float(f)
+                    matrix[:, i + j] = j / float(f)
                 except:
                     pass
 
-        self.matrix = 1 - (1 - 4 * self.matrix + 4 * self.matrix ** 2)
+        matrix = 1 - (1 - 4 * matrix + 4 * matrix ** 2)
+
+        if a != 0:
+            self.matrix = ndimage.rotate(matrix, a, reshape=False, mode=mode)
+
+        else:
+            self.matrix = matrix
 
 
 class pointParabolic:
@@ -138,31 +175,58 @@ class pointSinusoidal:
 
 class pointDamped:
 
-    def __init__(self, shape, x, y, r, s, f, o):
+    def __init__(self, shape, x, y, r, s, f, o, cut_before=False):
         circle_matrix, circle_mask = create_circular_mask(shape[1], shape[0], (x, y), r)
         linear_donut_matrix, donut_mask = create_donut_mask(shape[1], shape[0], s, (x, y), r)
 
-        sinusoidal_donut_matrix = np.where(donut_mask, np.cos((f * (1 - linear_donut_matrix) * np.pi / 2)), 0)
+        sinusoidal_donut_matrix = o * np.cos((f * (1 - linear_donut_matrix) * np.pi / 2)) - (o - 1)
 
-        self.matrix = sinusoidal_donut_matrix + circle_matrix
+
+        if cut_before:
+
+            below_mask = np.less(sinusoidal_donut_matrix, 0)
+            # Apply Below Mask
+            below_matrix = np.where(below_mask, 0, sinusoidal_donut_matrix)
+            # Apply Donut Mask
+            donut_matrix = np.where(donut_mask, below_matrix, 0)
+
+            self.matrix = np.multiply(donut_matrix, linear_donut_matrix) + circle_matrix
+
+
+        else:
+
+            # Dampen Matrix
+            matrix = np.multiply(sinusoidal_donut_matrix, linear_donut_matrix)
+
+            # Apply Donut Mask
+            dp_matrix = np.where(donut_mask, matrix, 0)
+
+            # Apply Below Mask
+            below_mask = np.less(dp_matrix, 0)
+            donut_matrix = np.where(below_mask, 0, dp_matrix)
+
+            self.matrix = donut_matrix + circle_matrix
 
 
 if __name__ == '__main__':
     import cv2
-    # mat = squarePattern((500, 500), 0, 0, 50, 1)
-    # mat = sinusoidalPattern((500, 500), 0, 0, 2)
-    # mat = paraboloidPattern((500, 500), 0, 0, 50)
-    # mat = reverseParaboloidPattern((500, 500), 0, 0, 50)
+    # mat = squarePattern((500, 500), 45, 0, 50, 5, mode='wrap')
+    # mat = sinusoidalPattern((500, 500), 45, 0, 2, mode='mirror')
+    # mat = paraboloidPattern((500, 500), 35, 0, 50)
+    # mat = reverseParaboloidPattern((500, 500), 35, 0, 50)
     # mat2 = pointParabolic((500,500), 250, 250, 100, 100)
     # mat = pointLinear((500,500), 250, 250, 100, 100)
     # mat = pointSinusoidal((500,500), 250, 250, 100, 100)
     # mat1 = pointReverseParabolic((500,500), 250, 250, 100, 100)
-    mat1 = pointDamped((500,500), 250, 250, 100, 100, 1, 2)
+    # mat1 = pointDamped((500,500), 250, 250, 100, 100, 50, 0.5)
+    # mat1 = pointDamped((500,500), 150, 250, 100, 100, 20, 0.5)
+    # mat2 = pointDamped((500,500), 350, 250, 100, 100, 20, 0.5)
 
-    img_mat = cv2.cvtColor(mat1.matrix, cv2.COLOR_GRAY2BGR)
+    img_mat = cv2.cvtColor(mat.matrix, cv2.COLOR_GRAY2BGR)
     # img_mat2 = cv2.cvtColor(mat2.matrix, cv2.COLOR_GRAY2BGR)
 
     cv2.imshow('image', img_mat)
+    cv2.moveWindow('image', 0, 0)
     # cv2.imshow('image2', img_mat2)
 
     cv2.waitKey(0)

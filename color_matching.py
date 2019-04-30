@@ -22,7 +22,7 @@ class ColorMatch:
         # Only get unique points
         unq_col_set = set(tuple(v) for m2d in img for v in m2d)
         print 'Colors:', len(unq_col_set)
-        unq_col = np.asarray(list(unq_col_set))
+        unq_col = np.asarray(list(unq_col_set)[0:1000])
         # Plot
 
         fig = plt.figure()
@@ -32,9 +32,7 @@ class ColorMatch:
 
         plt.show()
 
-
-
-        # Cluster
+        # Cluster???
 
 
     def save_model(self):
