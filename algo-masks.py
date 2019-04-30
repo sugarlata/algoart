@@ -13,7 +13,30 @@ def create_circular_mask(h, w, center=None, radius=None):
     dist_from_center = np.sqrt((X - center[0])**2 + (Y-center[1])**2)
 
     mask = dist_from_center <= radius
-    return np.where(mask, np.ones((h, w), dtype=np.float32), np.zeros((h, w), dtype=np.float32))
+    matrix = np.where(mask, np.ones((h, w), dtype=np.float32), np.zeros((h, w), dtype=np.float32))
+
+    return matrix, mask
+
+
+def create_donut_mask(h, w, f, center=None, radius=None):
+
+    if center is None: # use the middle of the image
+        center = [int(w/2), int(h/2)]
+    if radius is None: # use the smallest distance between the center and image walls
+        radius = min(center[0], center[1], w-center[0], h-center[1])
+
+    Y, X = np.ogrid[:h, :w]
+    dist_from_center = np.sqrt((X - center[0])**2 + (Y-center[1])**2)
+
+    full_mask = dist_from_center <= radius + f
+    inner_mask = radius <= dist_from_center
+    mask = np.logical_and(full_mask, inner_mask)
+
+    donut_dist = 1 - (dist_from_center.astype(np.float32) - radius) / f
+
+    matrix = np.where(mask, donut_dist, np.zeros((h, w), dtype=np.float32))
+
+    return matrix, mask
 
 
 class squarePattern:
@@ -78,10 +101,50 @@ class reverseParaboloidPattern:
 
 class pointParabolic:
 
-    def __init__(self, shape, x, y, d, f):
+    def __init__(self, shape, x, y, r, f):
 
-        self.matrix = create_circular_mask(shape[1], shape[0], (x, y), d / 2)
+        circle_matrix, _ = create_circular_mask(shape[1], shape[0], (x, y), r)
+        linear_donut_matrix, _ = create_donut_mask(shape[1], shape[0], f, (x, y), r)
+        parabolic_donut_matrix = linear_donut_matrix ** 2
+        self.matrix = circle_matrix + parabolic_donut_matrix
 
+
+class pointReverseParabolic:
+
+    def __init__(self, shape, x, y, r, f):
+
+        circle_matrix, _ = create_circular_mask(shape[1], shape[0], (x, y), r)
+        linear_donut_matrix, _ = create_donut_mask(shape[1], shape[0], f, (x, y), r)
+        parabolic_donut_matrix = -1 * linear_donut_matrix ** 2 + 2 * linear_donut_matrix
+        self.matrix = circle_matrix + parabolic_donut_matrix
+
+
+class pointLinear:
+
+    def __init__(self, shape, x, y, r, f):
+        circle_matrix, _ = create_circular_mask(shape[1], shape[0], (x, y), r)
+        linear_donut_matrix, _ = create_donut_mask(shape[1], shape[0], f, (x, y), r)
+        self.matrix = circle_matrix + linear_donut_matrix
+
+
+class pointSinusoidal:
+
+    def __init__(self, shape, x, y, r, f):
+        circle_matrix, _ = create_circular_mask(shape[1], shape[0], (x, y), r)
+        linear_donut_matrix, _ = create_donut_mask(shape[1], shape[0], f, (x, y), r)
+        sinusoidal_donut_matrix = np.sin(linear_donut_matrix * np.pi / 2)
+        self.matrix = circle_matrix + sinusoidal_donut_matrix
+
+
+class pointDamped:
+
+    def __init__(self, shape, x, y, r, s, f, o):
+        circle_matrix, circle_mask = create_circular_mask(shape[1], shape[0], (x, y), r)
+        linear_donut_matrix, donut_mask = create_donut_mask(shape[1], shape[0], s, (x, y), r)
+
+        sinusoidal_donut_matrix = np.where(donut_mask, np.cos((f * (1 - linear_donut_matrix) * np.pi / 2)), 0)
+
+        self.matrix = sinusoidal_donut_matrix + circle_matrix
 
 
 if __name__ == '__main__':
@@ -90,13 +153,18 @@ if __name__ == '__main__':
     # mat = sinusoidalPattern((500, 500), 0, 0, 2)
     # mat = paraboloidPattern((500, 500), 0, 0, 50)
     # mat = reverseParaboloidPattern((500, 500), 0, 0, 50)
-    mat = pointParabolic((500,500), 250, 250, 30, 2)
+    # mat2 = pointParabolic((500,500), 250, 250, 100, 100)
+    # mat = pointLinear((500,500), 250, 250, 100, 100)
+    # mat = pointSinusoidal((500,500), 250, 250, 100, 100)
+    # mat1 = pointReverseParabolic((500,500), 250, 250, 100, 100)
+    mat1 = pointDamped((500,500), 250, 250, 100, 100, 1, 2)
 
-    print mat.matrix
-
-    img_mat = cv2.cvtColor(mat.matrix, cv2.COLOR_GRAY2BGR)
+    img_mat = cv2.cvtColor(mat1.matrix, cv2.COLOR_GRAY2BGR)
+    # img_mat2 = cv2.cvtColor(mat2.matrix, cv2.COLOR_GRAY2BGR)
 
     cv2.imshow('image', img_mat)
+    # cv2.imshow('image2', img_mat2)
+
     cv2.waitKey(0)
 
     cv2.destroyAllWindows()
