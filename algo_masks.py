@@ -140,8 +140,8 @@ class pointParabolic:
 
     def __init__(self, shape, x, y, r, f):
 
-        circle_matrix, _ = create_circular_mask(shape[1], shape[0], (x, y), r)
-        linear_donut_matrix, _ = create_donut_mask(shape[1], shape[0], f, (x, y), r)
+        circle_matrix, _ = create_circular_mask(shape[0], shape[1], (x, y), r)
+        linear_donut_matrix, _ = create_donut_mask(shape[0], shape[1], f, (x, y), r)
         parabolic_donut_matrix = linear_donut_matrix ** 2
         self.matrix = circle_matrix + parabolic_donut_matrix
 
@@ -150,8 +150,8 @@ class pointReverseParabolic:
 
     def __init__(self, shape, x, y, r, f):
 
-        circle_matrix, _ = create_circular_mask(shape[1], shape[0], (x, y), r)
-        linear_donut_matrix, _ = create_donut_mask(shape[1], shape[0], f, (x, y), r)
+        circle_matrix, _ = create_circular_mask(shape[0], shape[1], (x, y), r)
+        linear_donut_matrix, _ = create_donut_mask(shape[0], shape[1], f, (x, y), r)
         parabolic_donut_matrix = -1 * linear_donut_matrix ** 2 + 2 * linear_donut_matrix
         self.matrix = circle_matrix + parabolic_donut_matrix
 
@@ -159,16 +159,16 @@ class pointReverseParabolic:
 class pointLinear:
 
     def __init__(self, shape, x, y, r, f):
-        circle_matrix, _ = create_circular_mask(shape[1], shape[0], (x, y), r)
-        linear_donut_matrix, _ = create_donut_mask(shape[1], shape[0], f, (x, y), r)
+        circle_matrix, _ = create_circular_mask(shape[0], shape[1], (x, y), r)
+        linear_donut_matrix, _ = create_donut_mask(shape[0], shape[1], f, (x, y), r)
         self.matrix = circle_matrix + linear_donut_matrix
 
 
 class pointSinusoidal:
 
     def __init__(self, shape, x, y, r, f):
-        circle_matrix, _ = create_circular_mask(shape[1], shape[0], (x, y), r)
-        linear_donut_matrix, _ = create_donut_mask(shape[1], shape[0], f, (x, y), r)
+        circle_matrix, _ = create_circular_mask(shape[0], shape[1], (x, y), r)
+        linear_donut_matrix, _ = create_donut_mask(shape[0], shape[1], f, (x, y), r)
         sinusoidal_donut_matrix = np.sin(linear_donut_matrix * np.pi / 2)
         self.matrix = circle_matrix + sinusoidal_donut_matrix
 
@@ -176,8 +176,8 @@ class pointSinusoidal:
 class pointDamped:
 
     def __init__(self, shape, x, y, r, s, f, o, cut_before=False):
-        circle_matrix, circle_mask = create_circular_mask(shape[1], shape[0], (x, y), r)
-        linear_donut_matrix, donut_mask = create_donut_mask(shape[1], shape[0], s, (x, y), r)
+        circle_matrix, circle_mask = create_circular_mask(shape[0], shape[1], (x, y), r)
+        linear_donut_matrix, donut_mask = create_donut_mask(shape[0], shape[1], s, (x, y), r)
 
         sinusoidal_donut_matrix = o * np.cos((f * (1 - linear_donut_matrix) * np.pi / 2)) - (o - 1)
 
