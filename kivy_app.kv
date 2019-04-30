@@ -1,0 +1,458 @@
+
+MainScreen:
+
+    GridLayout:
+        cols: 2
+
+        ScreenImage:
+            id: mainImage
+
+        MDTabbedPanel:
+            size_hint: None, 1
+            width: 400
+            tab_display_mode:'text'
+
+
+            MDTab:
+                name: 'tab_color'
+                text: 'Color Model'
+
+                GridLayout:
+                    padding: dp(20)
+                    spacing: dp(5)
+
+                    cols: 1
+
+                    ScrollView:
+                        do_scroll_x:
+                        size_hint: 1, None
+                        height: dp(300)
+                        MDList:
+                            id: list_color_models
+
+                    GridLayout:
+                        size_hint: 1, None
+                        height: dp(50)
+                        cols: 2
+
+
+                        AnchorLayout:
+                            center_x: True
+
+                            MDRaisedButton:
+                                text: 'Remove'
+
+
+                        AnchorLayout:
+                            center_x: True
+
+                            MDRaisedButton:
+                                text: 'Add'
+
+                    GridLayout:
+                        size_hint: 1, None
+                        height: dp(50)
+                        cols: 2
+
+                        MDLabel:
+                            text: 'HSV / BGR'
+
+                        MDSwitch:
+                            id: color_hsv_bgr
+                            size_hint:    None, None
+                            size:        dp(36), dp(48)
+                            pos_hint:    {'center_x': 0.75, 'center_y': 0.5}
+                            _active:        False
+
+                    GridLayout:
+                        size_hint: 1, None
+                        height: dp(50)
+                        cols: 2
+
+                        MDTextField:
+                            helper_text: "Pixel Blob Limit"
+                            helper_text_mode: "persistent"
+
+                    AnchorLayout:
+                        size_hint: 1, None
+                        height: dp(50)
+                        center_x: True
+
+                        MDRaisedButton:
+                            text: 'Reload Color Model'
+
+
+
+            MDTab:
+                name: 'tab_background'
+                text: 'Background'
+
+                GridLayout:
+                    padding: dp(20)
+                    spacing: dp(5)
+                    cols: 1
+
+                    MDTextField:
+                        helper_text: "Background File Name"
+                        helper_text_mode: "persistent"
+
+                    AnchorLayout:
+                        size_hint: 1, None
+                        height: dp(50)
+                        center_x: True
+
+                        MDRaisedButton:
+                            text: 'Load'
+
+                    GridLayout:
+                        size_hint: 1, None
+                        height: dp(90)
+
+                        cols: 1
+
+                        GridLayout:
+                            cols: 2
+                            size_hint: 1, 1
+
+                            MDLabel:
+                                size_hint: None, None
+                                height: dp(30)
+                                width: dp(100)
+                                text: 'Black'
+
+                            MDCheckbox:
+                                id: chk_black
+                                group: 'grp_background'
+                                size_hint:    None, None
+                                size:        dp(30), dp(30)
+                                pos_hint:    {'center_x': 0.25, 'center_y': 0.5}
+
+                            MDLabel:
+                                size_hint: None, None
+                                height: dp(30)
+                                width: dp(100)
+                                text: 'White'
+
+                            MDCheckbox:
+                                id: chk_white
+                                group: 'grp_background'
+                                size_hint:    None, None
+                                size:        dp(30), dp(30)
+                                pos_hint:    {'center_x': 0.25, 'center_y': 0.5}
+
+                            MDLabel:
+                                size_hint: None, None
+                                height: dp(30)
+                                width: dp(100)
+                                text: 'Picture'
+
+                            MDCheckbox:
+                                id: chk_picture
+                                group: 'grp_background'
+                                size_hint:    None, None
+                                size:        dp(30), dp(30)
+                                pos_hint:    {'center_x': 0.25, 'center_y': 0.5}
+
+                    AnchorLayout:
+                        size_hint: 1, None
+                        height: dp(50)
+                        center_x: True
+
+                        MDRaisedButton:
+                            text: 'OK'
+
+
+
+            MDTab:
+                name: 'tab_foreground'
+                text: 'Foreground'
+
+                GridLayout:
+                    padding: dp(20)
+                    spacing: dp(5)
+
+                    cols: 1
+
+                    ScrollView:
+                        do_scroll_x:
+                        size_hint: 1, None
+                        height: dp(150)
+                        MDList:
+                            id: list_filters
+
+                    GridLayout:
+                        size_hint: 1, None
+                        height: dp(50)
+                        cols: 2
+
+
+                        AnchorLayout:
+                            center_x: True
+
+                            MDRaisedButton:
+                                text: 'Remove'
+
+
+                        AnchorLayout:
+                            center_x: True
+
+                            MDRaisedButton:
+                                text: 'Add'
+
+                    ScrollView:
+                        do_scroll_x:
+                        size_hint: 1, 1
+
+                        GridLayout:
+                            padding: dp(5)
+                            size_hint: 1, None
+                            height: dp(600)
+                            cols: 2
+
+                            MDLabel:
+                                size_hint: None, None
+                                size: dp(100), dp(50)
+                                text: 'Shape'
+
+                            GridLayout:
+                                size_hint: 1, None
+                                height: dp(50)
+                                spacing: dp(10)
+                                cols: 2
+
+                                MDTextField:
+                                    helper_text: "x"
+                                    helper_text_mode: "persistent"
+
+                                MDTextField:
+                                    helper_text: "y"
+                                    helper_text_mode: "persistent"
+
+                            MDLabel:
+                                size_hint: None, None
+                                size: dp(100), dp(50)
+                                text: 'Mode'
+
+                            MDTextField:
+                                helper_text: "reflect, constant, nearest, mirror, wrap"
+                                helper_text_mode: "persistent"
+
+                            GridLayout:
+                                cols: 2
+                                size_hint: None, None
+                                size: dp(100), dp(50)
+
+                                MDLabel:
+                                    size_hint: None, 1
+                                    width: 20
+                                    text: 'a'
+
+                                MDTextField:
+                                    id: tf_a
+
+                            MDSlider:
+                                id: slider_a
+                                min:0
+                                max:360
+                                value: 10
+
+
+                            GridLayout:
+                                cols: 2
+                                size_hint: None, None
+                                size: dp(100), dp(50)
+
+                                MDLabel:
+                                    size_hint: None, 1
+                                    width: 20
+                                    text: 'f'
+
+                                MDTextField:
+                                    id: tf_f
+
+                            MDSlider:
+                                id: slider_f
+                                min:0
+                                max:100
+                                value: 10
+
+                            GridLayout:
+                                cols: 2
+                                size_hint: None, None
+                                size: dp(100), dp(50)
+
+                                MDLabel:
+                                    size_hint: None, 1
+                                    width: 20
+                                    text: 'o'
+
+                                MDTextField:
+                                    id: tf_o
+
+                            MDSlider:
+                                id: slider_o
+                                min:0
+                                max:100
+                                value: 10
+
+                            GridLayout:
+                                cols: 2
+                                size_hint: None, None
+                                size: dp(100), dp(50)
+
+                                MDLabel:
+                                    size_hint: None, 1
+                                    width: 20
+                                    text: 's'
+
+                                MDTextField:
+                                    id: tf_s
+
+                            MDSlider:
+                                id: slider_s
+                                min:0
+                                max:100
+                                value: 10
+
+                            GridLayout:
+                                cols: 2
+                                size_hint: None, None
+                                size: dp(100), dp(50)
+
+                                MDLabel:
+                                    size_hint: None, 1
+                                    width: 20
+                                    text: 'x'
+
+                                MDTextField:
+                                    id: tf_x
+
+                            MDSlider:
+                                id: slider_x
+                                min:0
+                                max:100
+                                value: 10
+
+                            GridLayout:
+                                cols: 2
+                                size_hint: None, None
+                                size: dp(100), dp(50)
+
+                                MDLabel:
+                                    size_hint: None, 1
+                                    width: 20
+                                    text: 'y'
+
+                                MDTextField:
+                                    id: tf_y
+
+                            MDSlider:
+                                id: slider_y
+                                min:0
+                                max:100
+                                value: 10
+
+                            GridLayout:
+                                cols: 2
+                                size_hint: None, None
+                                size: dp(100), dp(50)
+
+                                MDLabel:
+                                    size_hint: None, 1
+                                    width: 20
+                                    text: 'r'
+
+                                MDTextField:
+                                    id: tf_r
+
+                            MDSlider:
+                                id: slider_r
+                                min:0
+                                max:100
+                                value: 10
+
+
+
+                            MDLabel:
+                                size_hint: None, None
+                                size: dp(100), dp(50)
+                                text: 'Cut Before'
+
+                            MDSwitch:
+                                id: cut_before
+                                size_hint: None, None
+                                width: dp(50)
+                                height: dp(50)
+                                pos_hint:    {'center_x': 0.75, 'center_y': 0.5}
+                                _active:        False
+
+
+                    GridLayout:
+                        size_hint: 1, None
+                        height: dp(40)
+                        cols: 2
+
+                        MDLabel:
+                            size_hint: None, None
+                            size: dp(100), dp(40)
+                            text: 'Add / Mult'
+
+
+                        MDSwitch:
+                            id: add_mult
+                            size_hint: None, None
+                            width: dp(50)
+                            height: dp(40)
+                            pos_hint:    {'center_x': 0.75, 'center_y': 0.5}
+                            _active:        False
+
+                    MDTextField:
+                        helper_text: "Filter File Name"
+                        helper_text_mode: "persistent"
+
+
+                    AnchorLayout:
+                        size_hint: 1, None
+                        height: dp(40)
+                        center_x: True
+                        MDRaisedButton:
+                            text: 'Export Flattened Filter'
+
+            MDTab:
+                name: 'tab_save'
+                text: 'Save'
+
+                GridLayout:
+                    spacing: dp(5)
+                    padding: dp(20)
+                    cols: 1
+
+                    MDTextField:
+                        helper_text: "Foreground File Name"
+                        helper_text_mode: "persistent"
+
+                    GridLayout:
+                        cols: 2
+                        size_hint: 1, None
+                        height: dp(50)
+
+                        MDLabel:
+                            size_hint: None, None
+                            size: dp(100), dp(50)
+                            text: 'HSV / BGR'
+
+                        MDSwitch:
+                            id: after_hsv_bgr
+                            size_hint: None, None
+                            width: dp(50)
+                            height: dp(50)
+                            pos_hint:    {'center_x': 0.75, 'center_y': 0.5}
+                            _active:        False
+
+                    AnchorLayout:
+                        size_hint: 1, None
+                        height: dp(50)
+                        center_x: True
+
+                        MDRaisedButton:
+                            text: 'Save'
