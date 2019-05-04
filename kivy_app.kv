@@ -1,3 +1,4 @@
+#:import MDDropdownMenu kivymd.menu.MDDropdownMenu
 
 
 MainScreen:
@@ -44,7 +45,7 @@ MainScreen:
                             size_hint:    None, None
                             size:        dp(36), dp(48)
                             pos_hint:    {'center_x': 0.75, 'center_y': 0.5}
-                            _active:        False
+                            active: True
 
                     GridLayout:
                         size_hint: 1, None
@@ -119,7 +120,29 @@ MainScreen:
                             size_hint:    None, None
                             size:        dp(36), dp(48)
                             pos_hint:    {'center_x': 0.75, 'center_y': 0.5}
-                            _active:        False
+                            active: True
+
+                    MDTextField:
+                        size_hint: 1, None
+                        height: dp(50)
+                        id: brightness_level
+                        helper_text: "Brightness Level"
+                        helper_text_mode: "persistent"
+
+                    GridLayout:
+                        size_hint: 1, None
+                        height: dp(50)
+                        cols: 2
+
+                        MDLabel:
+                            text: 'Contrast'
+
+                        MDSwitch:
+                            id: contrast_switch
+                            size_hint:    None, None
+                            size:        dp(36), dp(48)
+                            pos_hint:    {'center_x': 0.75, 'center_y': 0.5}
+                            active: True
 
                     AnchorLayout:
                         size_hint: 1, None
@@ -196,6 +219,7 @@ MainScreen:
             MDTab:
                 name: 'tab_foreground'
                 text: 'Foreground'
+                on_pre_enter: root.foreground_enter()
 
                 GridLayout:
                     padding: dp(20)
@@ -221,6 +245,7 @@ MainScreen:
 
                             MDRaisedButton:
                                 text: 'Remove'
+                                on_release: root.remove_filter()
 
 
                         AnchorLayout:
@@ -228,6 +253,7 @@ MainScreen:
 
                             MDRaisedButton:
                                 text: 'Add'
+                                on_release: MDDropdownMenu(items=root.filter_list, width_mult=4).open(self)
 
                     ScrollView:
                         do_scroll_x:
@@ -236,40 +262,30 @@ MainScreen:
                         GridLayout:
                             padding: dp(5)
                             size_hint: 1, None
-                            height: dp(600)
-                            cols: 2
+                            height: dp(450)
+                            cols: 1
 
-                            MDLabel:
-                                size_hint: None, None
-                                size: dp(100), dp(50)
-                                text: 'Shape'
+
 
                             GridLayout:
+                                cols: 2
                                 size_hint: 1, None
-                                height: dp(50)
-                                spacing: dp(10)
-                                cols: 2
-
-                                MDTextField:
-                                    helper_text: "x"
-                                    helper_text_mode: "persistent"
-
-                                MDTextField:
-                                    helper_text: "y"
-                                    helper_text_mode: "persistent"
-
-                            MDLabel:
-                                size_hint: None, None
                                 size: dp(100), dp(50)
-                                text: 'Mode'
 
-                            MDTextField:
-                                helper_text: "reflect, constant, nearest, mirror, wrap"
-                                helper_text_mode: "persistent"
+                                MDLabel:
+                                    size_hint: None, None
+                                    size: dp(100), dp(50)
+                                    text: 'Mode'
+
+                                MDTextField:
+                                    id: tf_mode
+                                    helper_text: "reflect, constant, nearest, mirror, wrap"
+                                    helper_text_mode: "persistent"
+                                    on_text: root.change_filter_settings(self, 'mode')
 
                             GridLayout:
                                 cols: 2
-                                size_hint: None, None
+                                size_hint: 1, None
                                 size: dp(100), dp(50)
 
                                 MDLabel:
@@ -279,17 +295,11 @@ MainScreen:
 
                                 MDTextField:
                                     id: tf_a
-
-                            MDSlider:
-                                id: slider_a
-                                min:0
-                                max:360
-                                value: 10
-
+                                    on_text: root.change_filter_settings(self, 'a')
 
                             GridLayout:
                                 cols: 2
-                                size_hint: None, None
+                                size_hint: 1, None
                                 size: dp(100), dp(50)
 
                                 MDLabel:
@@ -299,16 +309,11 @@ MainScreen:
 
                                 MDTextField:
                                     id: tf_f
-
-                            MDSlider:
-                                id: slider_f
-                                min:0
-                                max:100
-                                value: 10
+                                    on_text: root.change_filter_settings(self, 'f')
 
                             GridLayout:
                                 cols: 2
-                                size_hint: None, None
+                                size_hint: 1, None
                                 size: dp(100), dp(50)
 
                                 MDLabel:
@@ -318,16 +323,11 @@ MainScreen:
 
                                 MDTextField:
                                     id: tf_o
-
-                            MDSlider:
-                                id: slider_o
-                                min:0
-                                max:100
-                                value: 10
+                                    on_text: root.change_filter_settings(self, 'o')
 
                             GridLayout:
                                 cols: 2
-                                size_hint: None, None
+                                size_hint: 1, None
                                 size: dp(100), dp(50)
 
                                 MDLabel:
@@ -337,16 +337,11 @@ MainScreen:
 
                                 MDTextField:
                                     id: tf_s
-
-                            MDSlider:
-                                id: slider_s
-                                min:0
-                                max:100
-                                value: 10
+                                    on_text: root.change_filter_settings(self, 's')
 
                             GridLayout:
                                 cols: 2
-                                size_hint: None, None
+                                size_hint: 1, None
                                 size: dp(100), dp(50)
 
                                 MDLabel:
@@ -356,16 +351,11 @@ MainScreen:
 
                                 MDTextField:
                                     id: tf_x
-
-                            MDSlider:
-                                id: slider_x
-                                min:0
-                                max:100
-                                value: 10
+                                    on_text: root.change_filter_settings(self, 'x')
 
                             GridLayout:
                                 cols: 2
-                                size_hint: None, None
+                                size_hint: 1, None
                                 size: dp(100), dp(50)
 
                                 MDLabel:
@@ -375,16 +365,11 @@ MainScreen:
 
                                 MDTextField:
                                     id: tf_y
-
-                            MDSlider:
-                                id: slider_y
-                                min:0
-                                max:100
-                                value: 10
+                                    on_text: root.change_filter_settings(self, 'y')
 
                             GridLayout:
                                 cols: 2
-                                size_hint: None, None
+                                size_hint: 1, None
                                 size: dp(100), dp(50)
 
                                 MDLabel:
@@ -394,47 +379,62 @@ MainScreen:
 
                                 MDTextField:
                                     id: tf_r
-
-                            MDSlider:
-                                id: slider_r
-                                min:0
-                                max:100
-                                value: 10
+                                    on_text: root.change_filter_settings(self, 'r')
 
 
+                            GridLayout:
+                                cols: 2
+                                size_hint: 1, None
+                                size: dp(100), dp(50)
+
+                                MDLabel:
+                                    size_hint: None, None
+                                    size: dp(100), dp(50)
+                                    text: 'Cut Before'
+
+                                MDSwitch:
+                                    id: cut_before
+                                    size_hint: None, None
+                                    width: dp(50)
+                                    height: dp(50)
+                                    pos_hint:    {'center_x': 0.75, 'center_y': 0.5}
+                                    _active:        False
+                                    on_release: root.change_cut_settings(self, 'cut_before')
+
+
+
+                    AnchorLayout:
+                        size_hint: 1, None
+                        height: dp(40)
+                        center_x: True
+
+                        GridLayout:
+                            size_hint: None, None
+                            width: dp(150)
+                            height: dp(40)
+                            cols: 2
 
                             MDLabel:
                                 size_hint: None, None
-                                size: dp(100), dp(50)
-                                text: 'Cut Before'
+                                size: dp(100), dp(40)
+                                text: 'Add / Mult'
+
 
                             MDSwitch:
-                                id: cut_before
+                                id: add_mult
                                 size_hint: None, None
                                 width: dp(50)
-                                height: dp(50)
+                                height: dp(40)
                                 pos_hint:    {'center_x': 0.75, 'center_y': 0.5}
                                 _active:        False
 
-
-                    GridLayout:
+                    AnchorLayout:
                         size_hint: 1, None
                         height: dp(40)
-                        cols: 2
-
-                        MDLabel:
-                            size_hint: None, None
-                            size: dp(100), dp(40)
-                            text: 'Add / Mult'
-
-
-                        MDSwitch:
-                            id: add_mult
-                            size_hint: None, None
-                            width: dp(50)
-                            height: dp(40)
-                            pos_hint:    {'center_x': 0.75, 'center_y': 0.5}
-                            _active:        False
+                        center_x: True
+                        MDRaisedButton:
+                            text: 'Reload Filters'
+                            on_release: root.reload_filters()
 
                     MDTextField:
                         helper_text: "Filter File Name"
@@ -486,3 +486,7 @@ MainScreen:
 
                         MDRaisedButton:
                             text: 'Save'
+
+
+<FilterMenuItem>:
+    on_release: app.root.add_filter(self.filter_object)
