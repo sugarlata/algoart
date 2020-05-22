@@ -12,27 +12,54 @@ def hex_to_rgb(value, index):
 
 cdict = {
     'red': [
-        (0.0, hex_to_rgb('#060031', 0), hex_to_rgb('#060031', 0)),
-        (0.25, hex_to_rgb('#18007D', 0), hex_to_rgb('#18007D', 0)),
-        (0.5, hex_to_rgb('#7C0076', 0), hex_to_rgb('#7C0076', 0)),
-        (0.75, hex_to_rgb('#0700FA', 0), hex_to_rgb('#0700FA', 0)),
-        (1.0, hex_to_rgb('#CF00F6', 0), hex_to_rgb('#CF00F6', 0)),
+        (0.0, hex_to_rgb('#D34FB9', 0), hex_to_rgb('#D34FB9', 0)),
+        (0.25, hex_to_rgb('#458ADC', 0), hex_to_rgb('#458ADC', 0)),
+        (0.5, hex_to_rgb('#06C2F8', 0), hex_to_rgb('#06C2F8', 0)),
+        (0.75, hex_to_rgb('#87004A', 0), hex_to_rgb('#87004A', 0)),
+        (1.0, hex_to_rgb('#FF9E00', 0), hex_to_rgb('#FF9E00', 0)),
     ],
     'green': [
-        (0.0, hex_to_rgb('#060031', 1), hex_to_rgb('#060031', 1)),
-        (0.25, hex_to_rgb('#18007D', 1), hex_to_rgb('#18007D', 1)),
-        (0.5, hex_to_rgb('#7C0076', 1), hex_to_rgb('#7C0076', 1)),
-        (0.75, hex_to_rgb('#0700FA', 1), hex_to_rgb('#0700FA', 1)),
-        (1.0, hex_to_rgb('#CF00F6', 1), hex_to_rgb('#CF00F6', 1)),
+        (0.0, hex_to_rgb('#D34FB9', 1), hex_to_rgb('#D34FB9', 1)),
+        (0.25, hex_to_rgb('#458ADC', 1), hex_to_rgb('#458ADC', 1)),
+        (0.5, hex_to_rgb('#06C2F8', 1), hex_to_rgb('#06C2F8', 1)),
+        (0.75, hex_to_rgb('#87004A', 1), hex_to_rgb('#87004A', 1)),
+        (1.0, hex_to_rgb('#FF9E00', 1), hex_to_rgb('#FF9E00', 1)),
     ],
     'blue': [
-        (0.0, hex_to_rgb('#060031', 2), hex_to_rgb('#060031', 2)),
-        (0.25, hex_to_rgb('#18007D', 2), hex_to_rgb('#18007D', 2)),
-        (0.5, hex_to_rgb('#7C0076', 2), hex_to_rgb('#7C0076', 2)),
-        (0.75, hex_to_rgb('#0700FA', 2), hex_to_rgb('#0700FA', 2)),
-        (1.0, hex_to_rgb('#CF00F6', 2), hex_to_rgb('#CF00F6', 2)),
+        (0.0, hex_to_rgb('#D34FB9', 2), hex_to_rgb('#D34FB9', 2)),
+        (0.25, hex_to_rgb('#458ADC', 2), hex_to_rgb('#458ADC', 2)),
+        (0.5, hex_to_rgb('#06C2F8', 2), hex_to_rgb('#06C2F8', 2)),
+        (0.75, hex_to_rgb('#87004A', 2), hex_to_rgb('#87004A', 2)),
+        (1.0, hex_to_rgb('#FF9E00', 2), hex_to_rgb('#FF9E00', 2)),
     ],
 }
+
+
+
+# cdict = {
+#     'red': [
+#         (0.0, hex_to_rgb('#FFFF00', 0), hex_to_rgb('#FFFF00', 0)),
+#         (0.25, hex_to_rgb('#FF00FF', 0), hex_to_rgb('#FF00FF', 0)),
+#         (0.5, hex_to_rgb('#FFF6E1', 0), hex_to_rgb('#FFF6E1', 0)),
+#         (0.75, hex_to_rgb('#EEB7F4', 0), hex_to_rgb('#EEB7F4', 0)),
+#         (1.0, hex_to_rgb('#00FFFF', 0), hex_to_rgb('#00FFFF', 0)),
+#     ],
+#     'green': [
+#         (0.0, hex_to_rgb('#FFFF00', 1), hex_to_rgb('#FFFF00', 1)),
+#         (0.25, hex_to_rgb('#FF00FF', 1), hex_to_rgb('#FF00FF', 1)),
+#         (0.5, hex_to_rgb('#FFF6E1', 1), hex_to_rgb('#FFF6E1', 1)),
+#         (0.75, hex_to_rgb('#EEB7F4', 1), hex_to_rgb('#EEB7F4', 1)),
+#         (1.0, hex_to_rgb('#00FFFF', 1), hex_to_rgb('#00FFFF', 1)),
+#     ],
+#     'blue': [
+#         (0.0, hex_to_rgb('#FFFF00', 2), hex_to_rgb('#FFFF00', 2)),
+#         (0.25, hex_to_rgb('#FF00FF', 2), hex_to_rgb('#FF00FF', 2)),
+#         (0.5, hex_to_rgb('#FFF6E1', 2), hex_to_rgb('#FFF6E1', 2)),
+#         (0.75, hex_to_rgb('#EEB7F4', 2), hex_to_rgb('#EEB7F4', 2)),
+#         (1.0, hex_to_rgb('#00FFFF', 2), hex_to_rgb('#00FFFF', 2)),
+#     ],
+# }
+
 cmap = matplotlib.colors.LinearSegmentedColormap('cmap1', cdict, 256)
 
 palette = []
@@ -57,7 +84,7 @@ def quantizetopalette(silf, palette, dither=False):
 palettedata = [int(x*255) for x in palette]
 palimage = Image.new('P', (32, 32))
 palimage.putpalette(palettedata)
-oldimage = Image.open('raw-images\melb.jpeg')
+oldimage = Image.open('raw-images\juan.jpg')
 oldimage = oldimage.convert("RGB")
 newimage = quantizetopalette(oldimage, palimage, dither=False)
 newimage.save('raw-images\me.png')
